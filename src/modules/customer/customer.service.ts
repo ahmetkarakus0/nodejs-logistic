@@ -1,3 +1,4 @@
+import redis from '../../config/redis';
 import {
   BadRequestError,
   ConflictError,
@@ -6,6 +7,11 @@ import {
 } from '../../errors/http-error';
 import { getUserById } from '../auth/auth.repository';
 import { PublicCustomer, toPublicCustomer } from './customer.helpers';
+import {
+  getCachedCustomers,
+  invalidateCachedCustomers,
+  setCachedCustomers,
+} from './customer.redis';
 import {
   deleteCustomer,
   getCustomerById,
@@ -27,20 +33,34 @@ export const getCustomersService = async (
   filters: GetCustomersFilters,
   pageIndex: number,
   pageSize: number,
+  userId: string,
 ): Promise<PaginatedResponse<PublicCustomer>> => {
-  const data = await getCustomers(filters, pageIndex, pageSize);
+  const { data: cachedData, cacheKey } = await getCachedCustomers(
+    filters,
+    pageIndex,
+    pageSize,
+    userId,
+  );
+  if (cachedData) {
+    return cachedData;
+  }
 
-  if (!data) {
+  const fetchedData = await getCustomers(filters, pageIndex, pageSize);
+  if (!fetchedData) {
     throw new InternalServerError('Failed to fetch customers');
   }
 
-  return {
-    items: data.items.map(toPublicCustomer),
+  const responseData = {
+    items: fetchedData.items.map(toPublicCustomer),
     pageIndex,
     pageSize,
-    total: data.total,
-    totalPages: Math.ceil(data.total / pageSize),
+    total: fetchedData.total,
+    totalPages: Math.ceil(fetchedData.total / pageSize),
   };
+
+  await setCachedCustomers(cacheKey, responseData);
+
+  return responseData;
 };
 
 /**
@@ -50,6 +70,7 @@ export const getCustomersService = async (
  */
 export const createCustomerService = async (
   customer: ICustomer,
+  userId: string,
 ): Promise<{ message: string; customer: PublicCustomer }> => {
   const foundUser = await getUserById(customer.user_id);
   if (!foundUser) {
@@ -66,6 +87,8 @@ export const createCustomerService = async (
     throw new InternalServerError('Failed to create customer');
   }
 
+  await invalidateCachedCustomers(userId);
+
   return {
     message: 'Customer created successfully',
     customer: toPublicCustomer(newCustomer),
@@ -80,6 +103,7 @@ export const createCustomerService = async (
 export const updateCustomerService = async (
   id: string,
   customer: Partial<ICustomer>,
+  userId: string,
 ): Promise<{ message: string; customer: PublicCustomer }> => {
   const foundCustomer = await getCustomerById(id);
   if (!foundCustomer) {
@@ -102,6 +126,8 @@ export const updateCustomerService = async (
     throw new InternalServerError('Failed to update customer');
   }
 
+  await invalidateCachedCustomers(userId);
+
   return {
     message: 'Customer updated successfully',
     customer: toPublicCustomer(updatedCustomer),
@@ -115,6 +141,7 @@ export const updateCustomerService = async (
  */
 export const deleteCustomerService = async (
   id: string,
+  userId: string,
 ): Promise<{ message: string }> => {
   const foundCustomer = await getCustomerById(id);
   if (!foundCustomer) {
@@ -125,6 +152,8 @@ export const deleteCustomerService = async (
   if (!deletedCustomer) {
     throw new InternalServerError('Failed to delete customer');
   }
+
+  await invalidateCachedCustomers(userId);
 
   return { message: 'Customer deleted successfully' };
 };

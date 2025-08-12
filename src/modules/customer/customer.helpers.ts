@@ -20,28 +20,40 @@ export const createFilterQueryAndValues = (
   let filterValues: any[] = [];
   let paramIndex = 1;
 
-  const normalFieldKeys = ['companyName', 'email', 'userId'];
-  const billingAddressFieldKeys = [
-    'billingInfoBillingAddressStreet',
-    'billingInfoBillingAddressCity',
-    'billingInfoBillingAddressPostalCode',
-    'billingInfoBillingAddressCountry',
-  ];
-  const billingInfoFieldKeys = ['billingInfoTaxId', 'billingInfoPaymentMethod'];
-  const contactsFieldKeys = [
-    'billingInfoContactsName',
-    'billingInfoContactsEmail',
-    'billingInfoContactsPhone',
-  ];
+  const normalFieldKeys = {
+    companyName: 'company_name',
+    email: 'email',
+    userId: 'user_id',
+  };
 
-  for (const key of normalFieldKeys) {
+  const billingAddressFieldKeys = {
+    billingInfoBillingAddressStreet: 'street',
+    billingInfoBillingAddressCity: 'city',
+    billingInfoBillingAddressPostalCode: 'postal_code',
+    billingInfoBillingAddressCountry: 'country',
+  };
+
+  const billingInfoFieldKeys = {
+    billingInfoTaxId: 'tax_id',
+    billingInfoPaymentMethod: 'payment_method',
+  };
+
+  const contactsFieldKeys = {
+    billingInfoContactsName: 'name',
+    billingInfoContactsEmail: 'email',
+    billingInfoContactsPhone: 'phone',
+  };
+
+  for (const key in normalFieldKeys) {
     if (filters[key as keyof GetCustomersFilters]) {
-      conditions.push(`${key} ILIKE $${paramIndex++}`);
+      conditions.push(
+        `${normalFieldKeys[key as keyof typeof normalFieldKeys]} ILIKE $${paramIndex++}`,
+      );
       filterValues.push(`%${filters[key as keyof GetCustomersFilters]}%`);
     }
   }
 
-  for (const key of billingAddressFieldKeys) {
+  for (const key in billingAddressFieldKeys) {
     if (filters[key as keyof GetCustomersFilters]) {
       conditions.push(
         `billing_info->'billing_address'->>'${key}' ILIKE $${paramIndex++}`,
@@ -50,14 +62,14 @@ export const createFilterQueryAndValues = (
     }
   }
 
-  for (const key of billingInfoFieldKeys) {
+  for (const key in billingInfoFieldKeys) {
     if (filters[key as keyof GetCustomersFilters]) {
       conditions.push(`billing_info->>'${key}' ILIKE $${paramIndex++}`);
       filterValues.push(`%${filters[key as keyof GetCustomersFilters]}%`);
     }
   }
 
-  for (const key of contactsFieldKeys) {
+  for (const key in contactsFieldKeys) {
     if (filters[key as keyof GetCustomersFilters]) {
       conditions.push(`
         EXISTS (

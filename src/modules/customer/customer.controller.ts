@@ -24,7 +24,12 @@ export const getCustomers = async (req: Request, res: Response) => {
     filters[key as keyof GetCustomersFilters] = value as string;
   });
 
-  const customers = await getCustomersService(filters, pageIndex, pageSize);
+  const customers = await getCustomersService(
+    filters,
+    pageIndex,
+    pageSize,
+    req.user!.id,
+  );
   res.status(200).json(customers);
 };
 
@@ -32,7 +37,7 @@ export const getCustomers = async (req: Request, res: Response) => {
  * @route POST /customer
  */
 export const createCustomer = async (req: Request, res: Response) => {
-  const customer = await createCustomerService(req.body);
+  const customer = await createCustomerService(req.body, req.user!.id);
   res.status(201).json(customer);
 };
 
@@ -44,7 +49,7 @@ export const updateCustomer = async (req: Request, res: Response) => {
   if (!id) {
     throw new BadRequestError('ID is required');
   }
-  const customer = await updateCustomerService(id, req.body);
+  const customer = await updateCustomerService(id, req.body, req.user!.id);
   res.status(200).json(customer);
 };
 
@@ -56,6 +61,6 @@ export const deleteCustomer = async (req: Request, res: Response) => {
   if (!id) {
     throw new BadRequestError('ID is required');
   }
-  const customer = await deleteCustomerService(id);
+  const customer = await deleteCustomerService(id, req.user!.id);
   res.status(200).json(customer);
 };
