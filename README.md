@@ -1,68 +1,57 @@
-- Real-time visibility into vehicle or package location
-- Inefficient delivery routes → increased fuel costs
-- Poor customer experience → customers don’t know when a package will arrive
-- Lack of transparency for dispatchers → can’t track delays or driver behavior
-- Manual paperwork → invoices, delivery confirmations etc.
-- No centralized dashboard → data scattered across spreadsheets, WhatsApp groups, phone calls
+Example: First-Mile Delivery Business
+Business Type: A logistics company that specializes in picking up goods from manufacturers and bringing them to distribution hubs or warehouses.
 
-| Dispatcher/Admin
+Scenario:
+A company called "FreshFarm Logistics" works with farms and food producers to collect fresh produce daily and deliver it to central distribution centers where it will be sorted and sent to supermarkets.
 
-- Assign drivers & routes
-- See all vehicle positions
-- Know if delivery is delayed/on-time
-- Generate reports / invoices
+First-mile here means: From the origin of goods (farms, factories, suppliers) → to the first logistics hub or warehouse.
 
-| Driver
+Roles & Definitions
 
-- See route
-- Report package status (picked up, delivered)
-- Update location
+1. Customer
+   Definition:
+   In first-mile delivery, the “customer” is typically a business (e.g., a farm, manufacturer, supplier, or exporter) who needs their products transported to a distribution point.
 
-| Customer
+Roles & Responsibilities:
 
-- Live package tracking
-- Expected arrival time
-- Proof of delivery
-- Invoice
+Places pickup orders: Tells the logistics company what goods, how much, and where they need to be picked up.
+Prepares goods: Packages and labels items for pickup (often following the logistics company’s standards).
+Coordinates schedules: Ensures goods are ready when the driver arrives.
+Pays for the service: Based on distance, weight, or service agreement.
 
-🚀 Features That Solve Real Problems
-🔁 Core Logic
-Feature Why It’s Valuable
-Live vehicle location updates (every 5s) Dispatcher knows which driver is where, can optimize routes
-Route assignment UI (drag/drop) Dispatcher can easily assign deliveries
-Delivery status updates (e.g. picked up, in transit, delivered) Helps customer and dispatcher know delivery progress
-Customer-facing tracking page Improves customer trust and experience
-PDF invoice generation after delivery Automates admin work
-Background job processing (BullMQ) Reliable and async updates (e.g. scheduled notifications)
-Authentication system (JWT + refresh) Secure access control
-Driver mobile web app (lite version) Low-cost way to update delivery status
-Offline Mode (optional later) For rural areas, queue location updates when back online
+Example in our case: FreshFarm's customer is Green Valley Farm, which calls in to arrange pickup of 2 tons of apples for delivery to a city warehouse.
 
-💡 Bonus / Advanced Features
-Feature Reason to Add It
-Driver behavior metrics (e.g. avg speed, idle time) Fleet optimization
-ETA prediction using traffic API Better customer experience
-Notifications (email/SMS on delivery status) Improves engagement
-Multi-tenant system (for SaaS use) Sell to multiple logistics companies
-Admin analytics dashboard Business reporting (on-time %, fuel savings, etc)
-Role-based access control (RBAC) Enterprise-ready
+2. Driver
+   Definition:
+   The driver (sometimes called a courier in smaller deliveries) is the person physically transporting goods from the pickup location to the first distribution hub.
 
-🧱 MVP Definition
-To make this GitHub project realistic and valuable to recruiters/companies, the MVP (Minimum Viable Product) should include:
+Roles & Responsibilities:
 
-Area MVP Scope
-Backend API Auth (JWT), vehicles, drivers, routes, deliveries, real-time location updates via Redis pub/sub
-Frontend Dispatcher dashboard + live map, basic UI for assigning routes
-Realtime Vehicle location updates on map every 5s
-Customer UI Tracking page with map + delivery status
-PDF / Jobs Background job for invoice generation & email (BullMQ)
+Receives job details from the dispatcher (pickup location, delivery point, schedule, special handling notes).
+Picks up goods at the customer’s location.
+Verifies the goods match the manifest (right quantity, right items, in good condition).
+Secures the load in the vehicle.
+Delivers goods to the designated first hub/warehouse.
+Updates delivery status in the system or app.
 
-🧰 Technology Justification
-Tech Why Use It
-Go or Node.js High performance for real-time & REST APIs
-PostgreSQL Advanced queries, spatial extensions (PostGIS) possible
-Redis (Pub/Sub) Fast location updates without polling
-Redis (BullMQ) Robust background job queue
-React + Mapbox Smooth interactive maps
-JWT + Refresh Tokens Secure session handling
-PDFKit / Puppeteer Generate invoices from HTML templates
+Example in our case: John, a FreshFarm driver, picks up the apples at Green Valley Farm at 6 AM, confirms the count, and drives them to the FreshFarm city warehouse by 9 AM.
+
+3. Dispatcher
+   Definition:
+   The dispatcher is the coordinator who manages delivery assignments between customers and drivers, making sure pickups and drop-offs happen efficiently.
+
+Roles & Responsibilities:
+
+Assigns jobs to drivers based on route, availability, and load capacity.
+Tracks vehicles in real time to ensure on-time pickups and deliveries.
+Communicates updates between customers and drivers (delays, route changes, etc.).
+Optimizes routes to save time and costs.
+Handles issues: Breakdowns, traffic, last-minute customer requests.
+
+Example in our case: Emma, a FreshFarm dispatcher, sees that Green Valley Farm’s pickup is near two other suppliers. She assigns all three pickups to John in one route and updates his app with the order.
+
+Workflow Example
+Customer (Green Valley Farm) schedules pickup in FreshFarm’s app.
+Dispatcher (Emma) receives the request, groups it with nearby pickups, and assigns it to a driver.
+Driver (John) gets the job in his app, picks up the apples, confirms the load, and drives to the warehouse.
+Delivery status is updated in the system, and the customer gets notified of successful delivery.
