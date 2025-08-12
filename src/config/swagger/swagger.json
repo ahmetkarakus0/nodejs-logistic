@@ -1,0 +1,1195 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Logistic App API",
+    "description": "API documentation for the Logistic App - a comprehensive logistics management system with authentication, user management, and customer operations.",
+    "version": "1.0"
+  },
+  "produces": ["application/json"],
+  "host": "localhost:8000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Authentication and authorization endpoints"
+    },
+    {
+      "name": "customer",
+      "description": "Customer management operations"
+    }
+  ],
+  "securityDefinitions": {
+    "tempTokenHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "tempToken",
+      "description": "Temporary token for two-factor authentication"
+    },
+    "bearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+    },
+    "refreshTokenHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "refreshToken",
+      "description": "Refresh token for authentication"
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "operationId": "register",
+        "tags": ["auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "example": "John" },
+                "surname": { "type": "string", "example": "Doe" },
+                "phone": { "type": "string", "example": "+905079026718" },
+                "role": {
+                  "type": "string",
+                  "enum": ["admin", "driver", "customer"],
+                  "example": "admin"
+                },
+                "password": { "type": "string", "example": "adminadmin" }
+              },
+              "required": ["name", "surname", "phone", "role", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User registered successfully"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User already exists",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User already exists"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to create user",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to create user"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/two-factor-auth": {
+      "post": {
+        "operationId": "twoFactorAuth",
+        "tags": ["auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phone": { "type": "string", "example": "+905079026718" },
+                "password": { "type": "string", "example": "adminadmin" }
+              },
+              "required": ["phone", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Two factor authentication successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "surname": { "type": "string" },
+                    "phone": { "type": "string" },
+                    "role": {
+                      "type": "string",
+                      "enum": ["admin", "driver", "customer"]
+                    }
+                  }
+                },
+                "tempToken": { "type": "string" },
+                "message": { "type": "string" }
+              }
+            },
+            "examples": {
+              "application/json": {
+                "user": {
+                  "name": "John",
+                  "surname": "Doe",
+                  "phone": "+905079026718",
+                  "role": "admin"
+                },
+                "tempToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "message": "Two factor code sent successfully"
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid credentials"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to send two factor code",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to send two factor code"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify-two-factor-code": {
+      "post": {
+        "operationId": "verifyTwoFactorCode",
+        "tags": ["auth"],
+        "security": [
+          {
+            "tempTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": { "type": "string", "example": "123456" }
+              },
+              "required": ["code"]
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Two factor authentication successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string", "example": "John" },
+                    "surname": { "type": "string", "example": "Doe" },
+                    "phone": { "type": "string", "example": "+905079026718" },
+                    "role": {
+                      "type": "string",
+                      "enum": ["admin", "driver", "customer"],
+                      "example": "admin"
+                    }
+                  }
+                },
+                "accessToken": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refreshToken": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "expiresIn": { "type": "number", "example": 86400 },
+                "refreshTokenExpiresIn": { "type": "number", "example": 604800 }
+              },
+              "required": ["user", "accessToken", "refreshToken", "expiresIn"]
+            }
+          },
+          "401": {
+            "description": "Invalid code",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "Invalid code" }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/send-reset-password-link": {
+      "post": {
+        "operationId": "sendResetPasswordLink",
+        "tags": ["auth"],
+        "security": [
+          {
+            "tempTokenHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phone": { "type": "string", "example": "+905079026718" }
+              },
+              "required": ["phone"]
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Reset password link sent successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Reset password link sent successfully"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "example": "2025-08-11T12:00:00.000Z"
+                }
+              },
+              "required": ["message", "expiresAt"]
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid credentials"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to create reset password link"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "resetPassword",
+        "tags": ["auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phone": { "type": "string", "example": "+905079026718" },
+                "token": {
+                  "type": "string",
+                  "example": "a658ea02f5e6d05ca36a2be90bb7e0..."
+                },
+                "newPassword": {
+                  "type": "string",
+                  "example": "adminadmin"
+                }
+              },
+              "required": ["phone", "token", "newPassword"]
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Password updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Password updated successfully"
+                }
+              },
+              "required": ["message"]
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid credentials"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to update password"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh-token": {
+      "get": {
+        "operationId": "refreshToken",
+        "tags": ["auth"],
+        "security": [
+          {
+            "refreshTokenHeader": [],
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Two factor authentication successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accessToken": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "refreshToken": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "expiresIn": { "type": "number", "example": 86400 },
+                "refreshTokenExpiresIn": { "type": "number", "example": 604800 }
+              },
+              "required": [
+                "accessToken",
+                "refreshToken",
+                "expiresIn",
+                "refreshTokenExpiresIn"
+              ]
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid credentials"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to update password"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "operationId": "logout",
+        "tags": ["auth"],
+        "security": [
+          {
+            "refreshTokenHeader": [],
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Logged out successfully"
+                }
+              },
+              "required": ["message"]
+            }
+          },
+          "401": {
+            "description": "Invalid refresh token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid refresh token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to revoke refresh token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer": {
+      "get": {
+        "operationId": "getCustomers",
+        "tags": ["customer"],
+        "security": [
+          {
+            "refreshTokenHeader": [],
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 0
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "example": 25
+            }
+          },
+          {
+            "name": "companyName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoBillingAddressStreet",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoBillingAddressCity",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoBillingAddressPostalCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoBillingAddressCountry",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoTaxId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoPaymentMethod",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoContactsName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoContactsEmail",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          },
+          {
+            "name": "billingInfoContactsPhone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customers fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                      },
+                      "user_id": {
+                        "type": "string",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                      },
+                      "company_name": {
+                        "type": "string",
+                        "example": "Company Name"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "company@example.com"
+                      },
+                      "billing_info": {
+                        "type": "object",
+                        "properties": {
+                          "billing_address": {
+                            "type": "object",
+                            "properties": {
+                              "street": {
+                                "type": "string",
+                                "example": "123 Main St"
+                              },
+                              "city": {
+                                "type": "string",
+                                "example": "Istanbul"
+                              },
+                              "postal_code": {
+                                "type": "string",
+                                "example": "34000"
+                              },
+                              "country": {
+                                "type": "string",
+                                "example": "Turkey"
+                              }
+                            }
+                          },
+                          "tax_id": {
+                            "type": "string",
+                            "example": "1234567890"
+                          },
+                          "payment_method": {
+                            "type": "string",
+                            "example": "credit_card"
+                          },
+                          "contacts": {
+                            "type": "array",
+                            "example": [
+                              {
+                                "name": "Emily Davis",
+                                "email": "emily.davis@example.com",
+                                "phone": "+15551234567"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "pageIndex": {
+                  "type": "number",
+                  "example": 0
+                },
+                "pageSize": {
+                  "type": "number",
+                  "example": 25
+                },
+                "total": {
+                  "type": "number",
+                  "example": 100
+                },
+                "totalPages": {
+                  "type": "number",
+                  "example": 4
+                }
+              },
+              "required": [
+                "items",
+                "pageIndex",
+                "pageSize",
+                "total",
+                "totalPages"
+              ]
+            }
+          },
+          "400": {
+            "description": "Customer already exists",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer already exists"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to create customer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCustomer",
+        "tags": ["customer"],
+        "security": [
+          {
+            "refreshTokenHeader": [],
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "company_name": { "type": "string", "example": "Company Name" },
+                "email": { "type": "string", "example": "company@example.com" },
+                "billing_info": {
+                  "type": "object",
+                  "properties": {
+                    "billing_address": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string",
+                          "example": "123 Main St"
+                        },
+                        "city": { "type": "string", "example": "Istanbul" },
+                        "postal_code": { "type": "string", "example": "34000" },
+                        "country": { "type": "string", "example": "Turkey" }
+                      }
+                    },
+                    "tax_id": { "type": "string", "example": "1234567890" },
+                    "payment_method": {
+                      "type": "string",
+                      "example": "credit_card"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "Emily Davis",
+                          "email": "emily.davis@example.com",
+                          "phone": "+15551234567"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "required": ["user_id", "company_name", "email", "billing_info"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer created successfully"
+                },
+                "customer": {
+                  "type": "object",
+                  "properties": {
+                    "company_name": {
+                      "type": "string",
+                      "example": "Company Name"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "company@example.com"
+                    },
+                    "billing_info": {
+                      "type": "object",
+                      "properties": {
+                        "billing_address": {
+                          "type": "object",
+                          "properties": {
+                            "street": {
+                              "type": "string",
+                              "example": "123 Main St"
+                            },
+                            "city": { "type": "string", "example": "Istanbul" },
+                            "postal_code": {
+                              "type": "string",
+                              "example": "34000"
+                            },
+                            "country": { "type": "string", "example": "Turkey" }
+                          }
+                        },
+                        "tax_id": { "type": "string", "example": "1234567890" },
+                        "payment_method": {
+                          "type": "string",
+                          "example": "credit_card"
+                        },
+                        "contacts": {
+                          "type": "array",
+                          "example": [
+                            {
+                              "name": "Emily Davis",
+                              "email": "emily.davis@example.com",
+                              "phone": "+15551234567"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "required": ["message", "customer"]
+            }
+          },
+          "400": {
+            "description": "Customer already exists",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer already exists"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to create customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/{id}": {
+      "put": {
+        "operationId": "updateCustomer",
+        "tags": ["customer"],
+        "security": [
+          {
+            "refreshTokenHeader": [],
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "company_name": { "type": "string", "example": "Company Name" },
+                "email": { "type": "string", "example": "company@example.com" },
+                "billing_info": {
+                  "type": "object",
+                  "properties": {
+                    "billing_address": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string",
+                          "example": "123 Main St"
+                        },
+                        "city": { "type": "string", "example": "Istanbul" },
+                        "postal_code": { "type": "string", "example": "34000" },
+                        "country": { "type": "string", "example": "Turkey" }
+                      }
+                    },
+                    "tax_id": { "type": "string", "example": "1234567890" },
+                    "payment_method": {
+                      "type": "string",
+                      "example": "credit_card"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "Emily Davis",
+                          "email": "emily.davis@example.com",
+                          "phone": "+15551234567"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "required": ["id"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer updated successfully"
+                },
+                "customer": {
+                  "type": "object",
+                  "properties": {
+                    "company_name": {
+                      "type": "string",
+                      "example": "Company Name"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "company@example.com"
+                    },
+                    "billing_info": {
+                      "type": "object",
+                      "properties": {
+                        "billing_address": {
+                          "type": "object",
+                          "properties": {
+                            "street": {
+                              "type": "string",
+                              "example": "123 Main St"
+                            },
+                            "city": { "type": "string", "example": "Istanbul" },
+                            "postal_code": {
+                              "type": "string",
+                              "example": "34000"
+                            },
+                            "country": { "type": "string", "example": "Turkey" }
+                          }
+                        },
+                        "tax_id": { "type": "string", "example": "1234567890" },
+                        "payment_method": {
+                          "type": "string",
+                          "example": "credit_card"
+                        },
+                        "contacts": {
+                          "type": "array",
+                          "example": [
+                            {
+                              "name": "Emily Davis",
+                              "email": "emily.davis@example.com",
+                              "phone": "+15551234567"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "required": ["message", "customer"]
+            }
+          },
+          "400": {
+            "description": "Customer not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer not found"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Customer already exists for this user",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer already exists for this user"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to create customer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCustomer",
+        "tags": ["customer"],
+        "security": [
+          {
+            "refreshTokenHeader": [],
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer deleted successfully"
+                }
+              },
+              "required": ["message"]
+            }
+          },
+          "400": {
+            "description": "Customer not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Customer not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Failed to delete customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

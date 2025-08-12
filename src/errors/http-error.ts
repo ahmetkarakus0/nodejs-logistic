@@ -34,6 +34,12 @@ export class ForbiddenError extends HttpError {
   }
 }
 
+export class ConflictError extends HttpError {
+  constructor(message = 'Conflict', details?: any) {
+    super(409, message, details);
+  }
+}
+
 export class InternalServerError extends HttpError {
   constructor(message = 'Internal server error', details?: any) {
     super(500, message, details);

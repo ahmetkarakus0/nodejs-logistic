@@ -8,7 +8,7 @@ import {
 } from '../../errors/http-error';
 import { createResetPasswordToken } from '../../utils/create-reset-password-token';
 import { createTwoFactorCode } from '../../utils/create-two-factor-code';
-import { toPublicUser } from './auth.mapper';
+import { toPublicUser } from './auth.helpers';
 import {
   getUserById,
   getUserByPhone,
@@ -348,6 +348,11 @@ export const resetPasswordService = async (
   return { message: 'Password updated successfully' };
 };
 
+/**
+ * @param {string} token - The refresh token
+ *
+ * @returns {object} The message
+ */
 export const logoutService = async (
   token: string,
 ): Promise<{ message: string }> => {
