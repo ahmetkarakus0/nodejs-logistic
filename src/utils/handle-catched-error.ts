@@ -1,4 +1,4 @@
-import { InternalServerError } from '../errors/http-error';
+import { InternalServerError } from '@/errors/http-error';
 
 export const handleCatchedError = (
   error: unknown,
