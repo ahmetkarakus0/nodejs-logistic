@@ -1,0 +1,66 @@
+{
+  "post": {
+    "operationId": "register",
+    "tags": ["auth"],
+    "parameters": [
+      {
+        "name": "body",
+        "in": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string", "example": "John" },
+            "surname": { "type": "string", "example": "Doe" },
+            "phone": { "type": "string", "example": "+905079026718" },
+            "role": {
+              "type": "string",
+              "enum": ["admin", "driver", "customer"],
+              "example": "admin"
+            },
+            "password": { "type": "string", "example": "adminadmin" }
+          },
+          "required": ["name", "surname", "phone", "role", "password"]
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User registered successfully",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "User registered successfully"
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "User already exists",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "User already exists"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Failed to create user",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Failed to create user"
+            }
+          }
+        }
+      }
+    }
+  }
+}

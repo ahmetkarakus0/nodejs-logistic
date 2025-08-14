@@ -1,0 +1,57 @@
+{
+  "operationId": "deleteCustomer",
+  "tags": ["customer"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "type": "string"
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Customer deleted successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer deleted successfully"
+          }
+        },
+        "required": ["message"]
+      }
+    },
+    "400": {
+      "description": "Customer not found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer not found"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to delete customer"
+          }
+        }
+      }
+    }
+  }
+}

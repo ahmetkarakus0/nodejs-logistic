@@ -1,0 +1,51 @@
+{
+  "get": {
+    "operationId": "logout",
+    "tags": ["auth"],
+    "security": [
+      {
+        "refreshTokenHeader": [],
+        "bearerAuth": []
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Logged out successfully",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Logged out successfully"
+            }
+          },
+          "required": ["message"]
+        }
+      },
+      "401": {
+        "description": "Invalid refresh token",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Invalid refresh token"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Failed to revoke refresh token"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "operationId": "getCustomers",
+  "tags": ["customer"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "pageIndex",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number",
+        "example": 0
+      }
+    },
+    {
+      "name": "pageSize",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number",
+        "example": 25
+      }
+    },
+    {
+      "name": "companyName",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "email",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "userId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoBillingAddressStreet",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoBillingAddressCity",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoBillingAddressPostalCode",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoBillingAddressCountry",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoTaxId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoPaymentMethod",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoContactsName",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoContactsEmail",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "billingInfoContactsPhone",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Customers fetched successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "company_name": {
+                  "type": "string",
+                  "example": "Company Name"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "company@example.com"
+                },
+                "billing_info": {
+                  "type": "object",
+                  "properties": {
+                    "billing_address": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string",
+                          "example": "123 Main St"
+                        },
+                        "city": {
+                          "type": "string",
+                          "example": "Istanbul"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "34000"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "Turkey"
+                        }
+                      }
+                    },
+                    "tax_id": {
+                      "type": "string",
+                      "example": "1234567890"
+                    },
+                    "payment_method": {
+                      "type": "string",
+                      "example": "credit_card"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "example": [
+                        {
+                          "name": "Emily Davis",
+                          "email": "emily.davis@example.com",
+                          "phone": "+15551234567"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "pageIndex": {
+            "type": "number",
+            "example": 0
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 25
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 4
+          }
+        },
+        "required": ["items", "pageIndex", "pageSize", "total", "totalPages"]
+      }
+    },
+    "400": {
+      "description": "Customer already exists",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer already exists"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "User not found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User not found"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to create customer"
+          }
+        }
+      }
+    }
+  }
+}

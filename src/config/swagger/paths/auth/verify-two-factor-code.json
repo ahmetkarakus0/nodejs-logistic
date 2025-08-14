@@ -1,0 +1,81 @@
+{
+  "post": {
+    "operationId": "verifyTwoFactorCode",
+    "tags": ["auth"],
+    "security": [
+      {
+        "tempTokenHeader": []
+      }
+    ],
+    "parameters": [
+      {
+        "name": "body",
+        "in": "body",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "code": { "type": "string", "example": "123456" }
+          },
+          "required": ["code"]
+        }
+      }
+    ],
+
+    "responses": {
+      "200": {
+        "description": "Two factor authentication successful",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "example": "John" },
+                "surname": { "type": "string", "example": "Doe" },
+                "phone": { "type": "string", "example": "+905079026718" },
+                "role": {
+                  "type": "string",
+                  "enum": ["admin", "driver", "customer"],
+                  "example": "admin"
+                }
+              }
+            },
+            "accessToken": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            "refreshToken": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            "expiresIn": { "type": "number", "example": 86400 },
+            "refreshTokenExpiresIn": { "type": "number", "example": 604800 }
+          },
+          "required": ["user", "accessToken", "refreshToken", "expiresIn"]
+        }
+      },
+      "401": {
+        "description": "Invalid code",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string", "example": "Invalid code" }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "Internal server error"
+            }
+          }
+        }
+      }
+    }
+  }
+}

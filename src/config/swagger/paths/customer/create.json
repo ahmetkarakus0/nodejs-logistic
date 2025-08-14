@@ -1,0 +1,160 @@
+{
+  "operationId": "createCustomer",
+  "tags": ["customer"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "body",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "company_name": { "type": "string", "example": "Company Name" },
+          "email": { "type": "string", "example": "company@example.com" },
+          "billing_info": {
+            "type": "object",
+            "properties": {
+              "billing_address": {
+                "type": "object",
+                "properties": {
+                  "street": {
+                    "type": "string",
+                    "example": "123 Main St"
+                  },
+                  "city": { "type": "string", "example": "Istanbul" },
+                  "postal_code": { "type": "string", "example": "34000" },
+                  "country": { "type": "string", "example": "Turkey" }
+                }
+              },
+              "tax_id": { "type": "string", "example": "1234567890" },
+              "payment_method": {
+                "type": "string",
+                "example": "credit_card"
+              },
+              "contacts": {
+                "type": "array",
+                "example": [
+                  {
+                    "name": "Emily Davis",
+                    "email": "emily.davis@example.com",
+                    "phone": "+15551234567"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "required": ["user_id", "company_name", "email", "billing_info"]
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Customer created successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer created successfully"
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "company_name": {
+                "type": "string",
+                "example": "Company Name"
+              },
+              "email": {
+                "type": "string",
+                "example": "company@example.com"
+              },
+              "billing_info": {
+                "type": "object",
+                "properties": {
+                  "billing_address": {
+                    "type": "object",
+                    "properties": {
+                      "street": {
+                        "type": "string",
+                        "example": "123 Main St"
+                      },
+                      "city": { "type": "string", "example": "Istanbul" },
+                      "postal_code": {
+                        "type": "string",
+                        "example": "34000"
+                      },
+                      "country": { "type": "string", "example": "Turkey" }
+                    }
+                  },
+                  "tax_id": { "type": "string", "example": "1234567890" },
+                  "payment_method": {
+                    "type": "string",
+                    "example": "credit_card"
+                  },
+                  "contacts": {
+                    "type": "array",
+                    "example": [
+                      {
+                        "name": "Emily Davis",
+                        "email": "emily.davis@example.com",
+                        "phone": "+15551234567"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["message", "customer"]
+      }
+    },
+    "400": {
+      "description": "Customer already exists",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer already exists"
+          }
+        }
+      }
+    },
+    "401": {
+      "description": "User not found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User not found"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to create customer"
+          }
+        }
+      }
+    }
+  }
+}

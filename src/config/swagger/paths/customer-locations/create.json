@@ -1,0 +1,120 @@
+{
+  "operationId": "createCustomerLocation",
+  "tags": ["customer-locations"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "body",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "label": { "type": "string", "example": "Warehouse 1" },
+          "address_line_1": { "type": "string", "example": "123 Main St" },
+          "address_line_2": { "type": "string", "example": "Apt 1" },
+          "city": { "type": "string", "example": "Istanbul" },
+          "state": { "type": "string", "example": "Istanbul" },
+          "postal_code": { "type": "string", "example": "34000" },
+          "country": { "type": "string", "example": "Turkey" },
+          "latitude": { "type": "number", "example": 41.0082 },
+          "longitude": { "type": "number", "example": 29.0082 },
+          "type": { "type": "string", "example": "warehouse" },
+          "is_primary": { "type": "boolean", "example": true },
+          "notes": { "type": "string", "example": "This is a note" }
+        },
+        "required": [
+          "customer_id",
+          "label",
+          "address_line_1",
+          "city",
+          "postal_code",
+          "country",
+          "latitude",
+          "longitude",
+          "type",
+          "is_primary",
+          "notes",
+          "address_line_2",
+          "state",
+          "type",
+          "is_primary",
+          "notes"
+        ]
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Customer location created successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer location created successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "123e4567-e89b-12d3-a456-426614174000"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "123e4567-e89b-12d3-a456-426614174000"
+              },
+              "label": { "type": "string", "example": "Company Name" },
+              "address_line_1": { "type": "string", "example": "123 Main St" },
+              "address_line_2": { "type": "string", "example": "Apt 1" },
+              "city": { "type": "string", "example": "Istanbul" },
+              "state": { "type": "string", "example": "Istanbul" },
+              "postal_code": { "type": "string", "example": "34000" },
+              "country": { "type": "string", "example": "Turkey" },
+              "latitude": { "type": "number", "example": 41.0082 },
+              "longitude": { "type": "number", "example": 29.0082 },
+              "type": { "type": "string", "example": "office" },
+              "is_primary": { "type": "boolean", "example": true },
+              "notes": { "type": "string", "example": "This is a note" }
+            }
+          }
+        },
+        "required": ["message", "data"]
+      }
+    },
+    "400": {
+      "description": "Customer not found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer not found"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to create customer location"
+          }
+        }
+      }
+    }
+  }
+}
