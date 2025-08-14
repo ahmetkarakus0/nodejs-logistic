@@ -1,4 +1,4 @@
-import { IUser } from './auth.types';
+import { IUser } from '@/modules/auth/auth.types';
 
 type PublicUser = Omit<IUser, 'id' | 'password' | 'created_at' | 'updated_at'>;
 

@@ -1,17 +1,18 @@
-import redis from '../../config/redis';
 import {
   BadRequestError,
   ConflictError,
   InternalServerError,
   NotFoundError,
-} from '../../errors/http-error';
-import { getUserById } from '../auth/auth.repository';
-import { PublicCustomer, toPublicCustomer } from './customer.helpers';
+} from '@/errors/http-error';
+import {
+  PublicCustomer,
+  toPublicCustomer,
+} from '@/modules/customer/customer.helpers';
 import {
   getCachedCustomers,
   invalidateCachedCustomers,
   setCachedCustomers,
-} from './customer.redis';
+} from '@/modules/customer/customer.redis';
 import {
   deleteCustomer,
   getCustomerById,
@@ -19,8 +20,12 @@ import {
   getCustomers,
   insertCustomer,
   updateCustomer,
-} from './customer.repository';
-import { GetCustomersFilters, ICustomer } from './customer.types';
+} from '@/modules/customer/customer.repository';
+import {
+  GetCustomersFilters,
+  ICustomer,
+} from '@/modules/customer/customer.types';
+import { getUserById } from '@/modules/auth/auth.repository';
 
 /**
  * @param {GetCustomersFilters} filters - The filters to apply to the customers

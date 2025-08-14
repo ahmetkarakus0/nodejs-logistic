@@ -5,10 +5,10 @@ import {
   BadRequestError,
   InternalServerError,
   UnauthorizedError,
-} from '../../errors/http-error';
-import { createResetPasswordToken } from '../../utils/create-reset-password-token';
-import { createTwoFactorCode } from '../../utils/create-two-factor-code';
-import { toPublicUser } from './auth.helpers';
+} from '@/errors/http-error';
+import { createResetPasswordToken } from '@/utils/create-reset-password-token';
+import { createTwoFactorCode } from '@/utils/create-two-factor-code';
+import { toPublicUser } from '@/modules/auth/auth.helpers';
 import {
   getUserById,
   getUserByPhone,
@@ -23,14 +23,14 @@ import {
   markTwoFactorCodeAsUsed,
   revokeRefreshToken,
   updateUserPassword,
-} from './auth.repository';
+} from '@/modules/auth/auth.repository';
 import {
   ISendResetPasswordLinkResponse,
   IUser,
   IUserWithTempToken,
   IUserWithTokens,
   IWithTokenData,
-} from './auth.types';
+} from '@/modules/auth/auth.types';
 
 /**
  * @param {IUser} user - The user object

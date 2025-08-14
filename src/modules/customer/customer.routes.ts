@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { asyncHandler } from '../../middlewares/async-handler';
-import { authMiddleware } from '../../middlewares/auth';
-import { validate } from '../../middlewares/validate';
+import { asyncHandler } from '@/middlewares/async-handler';
+import { authMiddleware } from '@/middlewares/auth';
+import { validate } from '@/middlewares/validate';
 import {
   createCustomer,
   deleteCustomer,
   getCustomers,
   updateCustomer,
-} from './customer.controller';
+} from '@/modules/customer/customer.controller';
 import {
   createCustomerSchema,
   updateCustomerSchema,
-} from './customer.validator';
+} from '@/modules/customer/customer.validator';
 
 const customerRoutes = Router();
 

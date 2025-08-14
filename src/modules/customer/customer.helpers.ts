@@ -1,4 +1,7 @@
-import { GetCustomersFilters, ICustomer } from './customer.types';
+import {
+  GetCustomersFilters,
+  ICustomer,
+} from '@/modules/customer/customer.types';
 
 export type PublicCustomer = Omit<
   ICustomer,

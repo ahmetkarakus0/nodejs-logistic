@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { EUserRole } from './auth.types';
+import { EUserRole } from '@/modules/auth/auth.types';
 
 export const registerSchema = z.object({
   name: z
@@ -68,22 +68,24 @@ export const sendResetPasswordLinkSchema = z.object({
     }),
 });
 
-export const resetPasswordSchema = z.object({
-  phone: z
-    .string({
-      error: 'Phone is required',
-    })
-    .regex(/^\+?\d{10,15}$/, {
-      error: 'Invalid phone number',
+export const resetPasswordSchema = z
+  .object({
+    phone: z
+      .string({
+        error: 'Phone is required',
+      })
+      .regex(/^\+?\d{10,15}$/, {
+        error: 'Invalid phone number',
+      }),
+    token: z.string({
+      error: 'Token is required',
     }),
-  token: z.string({
-    error: 'Token is required',
-  }),
-  newPassword: z
-    .string({
-      error: 'New password is required',
-    })
-    .min(6, {
-      error: 'New password must be at least 6 characters',
-    }),
-});
+    newPassword: z
+      .string({
+        error: 'New password is required',
+      })
+      .min(6, {
+        error: 'New password must be at least 6 characters',
+      }),
+  })
+  .strip();

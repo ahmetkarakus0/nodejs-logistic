@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { BadRequestError } from '../../errors/http-error';
+import { BadRequestError } from '@/errors/http-error';
 import {
   createCustomerService,
   deleteCustomerService,
   getCustomersService,
   updateCustomerService,
-} from './customer.service';
-import { GetCustomersFilters } from './customer.types';
+} from '@/modules/customer/customer.service';
+import { GetCustomersFilters } from '@/modules/customer/customer.types';
 
 /**
  * @route GET /customer

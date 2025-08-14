@@ -7,7 +7,7 @@ import {
   sendResetPasswordLinkService,
   twoFactorAuthService,
   verifyTwoFactorCodeService,
-} from './auth.service';
+} from '@/modules/auth/auth.service';
 
 /**
  * @route POST /auth/register

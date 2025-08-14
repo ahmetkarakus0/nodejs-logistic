@@ -1,6 +1,6 @@
-import redis from '../../config/redis';
-import { PublicCustomer } from './customer.helpers';
-import { GetCustomersFilters } from './customer.types';
+import redis from '@/config/redis';
+import { PublicCustomer } from '@/modules/customer/customer.helpers';
+import { GetCustomersFilters } from '@/modules/customer/customer.types';
 
 export const getCachedCustomers = async (
   filters: GetCustomersFilters,

@@ -1,10 +1,10 @@
-import { createPool } from '../../database';
+import { createPool } from '@/database';
 import {
   IRefreshToken,
   IResetPasswordToken,
   ITwoFactorCode,
   IUser,
-} from './auth.types';
+} from '@/modules/auth/auth.types';
 
 export const insertUser = async (
   user: Omit<IUser, 'id' | 'created_at' | 'updated_at'>,
@@ -46,7 +46,7 @@ export const markTwoFactorCodeAsUsed = async (
   userId: string,
 ): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE two_factor_codes SET is_used = true WHERE code = $1 AND user_id = $2`;
+  const query = `UPDATE two_factor_codes SET is_used = true, updated_at = now() WHERE code = $1 AND user_id = $2`;
   await pool.query(query, [code, userId]);
   return true;
 };
@@ -98,7 +98,7 @@ export const markResetPasswordTokenAsUsed = async (
   phone: string,
 ): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE reset_password_tokens SET is_used = true WHERE token = $1 AND phone = $2`;
+  const query = `UPDATE reset_password_tokens SET is_used = true, updated_at = now() WHERE token = $1 AND phone = $2`;
   await pool.query(query, [token, phone]);
   return true;
 };
@@ -108,7 +108,7 @@ export const updateUserPassword = async (
   password: string,
 ): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE users SET password = $1 WHERE id = $2`;
+  const query = `UPDATE users SET password = $1, updated_at = now() WHERE id = $2`;
   await pool.query(query, [password, userId]);
   return true;
 };
@@ -135,7 +135,7 @@ export const getValidRefreshTokenByHash = async (
 
 export const revokeRefreshToken = async (id: string): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE refresh_tokens SET revoked = true WHERE id = $1`;
+  const query = `UPDATE refresh_tokens SET revoked = true, updated_at = now() WHERE id = $1`;
   await pool.query(query, [id]);
   return true;
 };

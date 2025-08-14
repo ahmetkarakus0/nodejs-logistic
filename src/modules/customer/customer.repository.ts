@@ -1,6 +1,9 @@
-import { createPool } from '../../database';
-import { createFilterQueryAndValues } from './customer.helpers';
-import { GetCustomersFilters, ICustomer } from './customer.types';
+import { createPool } from '@/database';
+import { createFilterQueryAndValues } from '@/modules/customer/customer.helpers';
+import {
+  GetCustomersFilters,
+  ICustomer,
+} from '@/modules/customer/customer.types';
 
 export const insertCustomer = async (
   customer: ICustomer,
@@ -21,7 +24,7 @@ export const insertCustomer = async (
     email,
     billing_info,
   ]);
-  return result.rows[0];
+  return result.rows[0] as ICustomer;
 };
 
 export const getCustomerByUserId = async (
@@ -30,7 +33,7 @@ export const getCustomerByUserId = async (
   const pool = await createPool();
   const query = `SELECT * FROM customers WHERE user_id = $1`;
   const result = await pool.query(query, [user_id]);
-  return result.rows[0];
+  return result.rows[0] as ICustomer;
 };
 
 export const updateCustomer = async (
@@ -45,24 +48,24 @@ export const updateCustomer = async (
     .join(', ');
 
   const pool = await createPool();
-  const query = `UPDATE customers SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+  const query = `UPDATE customers SET ${setClause}, updated_at = now() WHERE id = $${keys.length + 1} RETURNING *`;
   values.push(id);
   const result = await pool.query(query, values);
-  return result.rows[0];
+  return result.rows[0] as ICustomer;
 };
 
 export const getCustomerById = async (id: string): RepoPromise<ICustomer> => {
   const pool = await createPool();
   const query = `SELECT * FROM customers WHERE id = $1`;
   const result = await pool.query(query, [id]);
-  return result.rows[0];
+  return result.rows[0] as ICustomer;
 };
 
 export const deleteCustomer = async (id: string): RepoPromise<ICustomer> => {
   const pool = await createPool();
   const query = `DELETE FROM customers WHERE id = $1 RETURNING *`;
   const result = await pool.query(query, [id]);
-  return result.rows[0];
+  return result.rows[0] as ICustomer;
 };
 
 export const getCustomers = async (
@@ -85,5 +88,5 @@ export const getCustomers = async (
   const countResult = await pool.query(countQuery, filterValues);
   const total = +countResult.rows[0].count;
 
-  return { items: result.rows, total };
+  return { items: result.rows as ICustomer[], total };
 };

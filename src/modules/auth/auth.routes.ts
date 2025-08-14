@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { asyncHandler } from '../../middlewares/async-handler';
-import { validate } from '../../middlewares/validate';
+import { asyncHandler } from '@/middlewares/async-handler';
+import { validate } from '@/middlewares/validate';
 import {
   logout,
   refreshToken,
@@ -9,15 +9,15 @@ import {
   sendResetPasswordLink,
   twoFactorAuth,
   verifyTwoFactorCode,
-} from './auth.controller';
+} from '@/modules/auth/auth.controller';
 import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
   sendResetPasswordLinkSchema,
   verifyTwoFactorCodeSchema,
-} from './auth.validators';
-import { authMiddleware } from '../../middlewares/auth';
+} from '@/modules/auth/auth.validators';
+import { authMiddleware } from '@/middlewares/auth';
 
 const authRoutes = Router();
 
