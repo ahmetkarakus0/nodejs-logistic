@@ -229,30 +229,6 @@
         "required": ["items", "pageIndex", "pageSize", "total", "totalPages"]
       }
     },
-    "400": {
-      "description": "Customer already exists",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Customer already exists"
-          }
-        }
-      }
-    },
-    "401": {
-      "description": "User not found",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "User not found"
-          }
-        }
-      }
-    },
     "500": {
       "description": "Internal server error",
       "schema": {

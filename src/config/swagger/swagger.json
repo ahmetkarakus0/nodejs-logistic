@@ -81,8 +81,19 @@
       }
     },
     "/customer-locations": {
+      "get": {
+        "$ref": "paths/customer-locations/list.json"
+      },
       "post": {
         "$ref": "paths/customer-locations/create.json"
+      }
+    },
+    "/customer-locations/{id}": {
+      "put": {
+        "$ref": "paths/customer-locations/update.json"
+      },
+      "delete": {
+        "$ref": "paths/customer-locations/delete.json"
       }
     }
   }

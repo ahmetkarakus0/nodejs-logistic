@@ -1,5 +1,5 @@
 {
-  "operationId": "createCustomerLocation",
+  "operationId": "updateCustomerLocation",
   "tags": ["customer-locations"],
   "security": [
     {
@@ -8,6 +8,12 @@
     }
   ],
   "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "type": "string"
+    },
     {
       "name": "body",
       "in": "body",
@@ -28,56 +34,23 @@
           "country": { "type": "string", "example": "Turkey" },
           "latitude": { "type": "number", "example": 41.0082 },
           "longitude": { "type": "number", "example": 29.0082 },
-          "type": {
-            "type": "string",
-            "enum": [
-              "billing",
-              "shipping",
-              "warehouse",
-              "pickup",
-              "branch",
-              "factory",
-              "port",
-              "customs",
-              "hub",
-              "transit",
-              "other"
-            ],
-            "example": "warehouse"
-          },
+          "type": { "type": "string", "example": "warehouse" },
           "is_primary": { "type": "boolean", "example": true },
           "notes": { "type": "string", "example": "This is a note" }
         },
-        "required": [
-          "customer_id",
-          "label",
-          "address_line_1",
-          "city",
-          "postal_code",
-          "country",
-          "latitude",
-          "longitude",
-          "type",
-          "is_primary",
-          "notes",
-          "address_line_2",
-          "state",
-          "type",
-          "is_primary",
-          "notes"
-        ]
+        "required": []
       }
     }
   ],
   "responses": {
     "200": {
-      "description": "Customer location created successfully",
+      "description": "Customer location updated successfully",
       "schema": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
-            "example": "Customer location created successfully"
+            "example": "Customer location updated successfully"
           },
           "data": {
             "type": "object",
@@ -99,23 +72,7 @@
               "country": { "type": "string", "example": "Turkey" },
               "latitude": { "type": "number", "example": 41.0082 },
               "longitude": { "type": "number", "example": 29.0082 },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "billing",
-                  "shipping",
-                  "warehouse",
-                  "pickup",
-                  "branch",
-                  "factory",
-                  "port",
-                  "customs",
-                  "hub",
-                  "transit",
-                  "other"
-                ],
-                "example": "warehouse"
-              },
+              "type": { "type": "string", "example": "office" },
               "is_primary": { "type": "boolean", "example": true },
               "notes": { "type": "string", "example": "This is a note" }
             }
@@ -143,7 +100,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "example": "Failed to create customer location"
+            "example": "Failed to update customer location"
           }
         }
       }

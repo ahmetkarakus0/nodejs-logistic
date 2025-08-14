@@ -1,0 +1,57 @@
+{
+  "operationId": "deleteCustomerLocation",
+  "tags": ["customer-locations"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "type": "string"
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Customer location deleted successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer location deleted successfully"
+          }
+        },
+        "required": ["message"]
+      }
+    },
+    "400": {
+      "description": "Customer location not found",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Customer location not found"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to delete customer location"
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,6 @@ var twoFactorCode = '';
 var tempToken = '';
 
 const get2FACode = async () => {
-  console.log('Getting 2FA code');
   const request = await fetch('/api/v1/auth/two-factor-auth', {
     method: 'POST',
     body: JSON.stringify({

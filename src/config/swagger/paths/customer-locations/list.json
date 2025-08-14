@@ -1,0 +1,289 @@
+{
+  "operationId": "getCustomerLocations",
+  "tags": ["customer-locations"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "pageIndex",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number",
+        "example": 0
+      }
+    },
+    {
+      "name": "pageSize",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number",
+        "example": 25
+      }
+    },
+    {
+      "name": "customerId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "label",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "addressLine1",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "addressLine2",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "city",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "state",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "postalCode",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "country",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "latitude",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "longitude",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "type",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "enum": [
+          "billing",
+          "shipping",
+          "warehouse",
+          "pickup",
+          "branch",
+          "factory",
+          "port",
+          "customs",
+          "hub",
+          "transit",
+          "other"
+        ]
+      }
+    },
+    {
+      "name": "isPrimary",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "boolean"
+      }
+    },
+    {
+      "name": "notes",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Customer locations fetched successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "customer_id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "label": {
+                  "type": "string",
+                  "example": "Main Office"
+                },
+                "address_line_1": {
+                  "type": "string",
+                  "example": "123 Main St"
+                },
+                "address_line_2": {
+                  "type": "string",
+                  "example": "Apt 1"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "Istanbul"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "Istanbul"
+                },
+                "postal_code": {
+                  "type": "string",
+                  "example": "34000"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "Turkey"
+                },
+                "latitude": {
+                  "type": "number",
+                  "example": 41.0082
+                },
+                "longitude": {
+                  "type": "number",
+                  "example": 28.9784
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "billing",
+                    "shipping",
+                    "warehouse",
+                    "pickup",
+                    "branch",
+                    "factory",
+                    "port",
+                    "customs",
+                    "hub",
+                    "transit",
+                    "other"
+                  ],
+                  "example": "warehouse"
+                },
+                "is_primary": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "notes": {
+                  "type": "string",
+                  "example": "Notes"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2021-01-01T00:00:00.000Z"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "example": "2021-01-01T00:00:00.000Z"
+                }
+              },
+              "required": [
+                "id",
+                "customer_id",
+                "label",
+                "address_line_1",
+                "address_line_2",
+                "city",
+                "state",
+                "postal_code",
+                "country",
+                "latitude",
+                "longitude",
+                "type",
+                "is_primary",
+                "notes",
+                "created_at",
+                "updated_at"
+              ]
+            }
+          },
+          "pageIndex": {
+            "type": "number",
+            "example": 0
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 25
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 4
+          }
+        },
+        "required": ["items", "pageIndex", "pageSize", "total", "totalPages"]
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to fetch customer locations"
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import {
   GetCustomersFilters,
   ICustomer,
 } from '@/modules/customer/customer.types';
+import { createSetClause } from '@/utils/create-set-clause';
 
 export const insertCustomer = async (
   customer: ICustomer,
@@ -40,13 +41,7 @@ export const updateCustomer = async (
   id: string,
   customer: Partial<ICustomer>,
 ): RepoPromise<ICustomer> => {
-  const keys = Object.keys(customer);
-  const values = Object.values(customer);
-
-  const setClause = keys
-    .map((key, index) => `${key} = $${index + 1}`)
-    .join(', ');
-
+  const { keys, values, setClause } = createSetClause(customer);
   const pool = await createPool();
   const query = `UPDATE customers SET ${setClause}, updated_at = now() WHERE id = $${keys.length + 1} RETURNING *`;
   values.push(id);
@@ -86,7 +81,7 @@ export const getCustomers = async (
 
   const countQuery = `SELECT COUNT(*) FROM customers ${filterQuery}`;
   const countResult = await pool.query(countQuery, filterValues);
-  const total = +countResult.rows[0].count;
+  const total = +countResult.rows[0]?.count || 0;
 
   return { items: result.rows as ICustomer[], total };
 };

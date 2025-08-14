@@ -9,11 +9,6 @@ import {
   toPublicCustomer,
 } from '@/modules/customer/customer.helpers';
 import {
-  getCachedCustomers,
-  invalidateCachedCustomers,
-  setCachedCustomers,
-} from '@/modules/customer/customer.redis';
-import {
   deleteCustomer,
   getCustomerById,
   getCustomerByUserId,
@@ -26,6 +21,11 @@ import {
   ICustomer,
 } from '@/modules/customer/customer.types';
 import { getUserById } from '@/modules/auth/auth.repository';
+import {
+  getCachedList,
+  invalidateCachedList,
+  setCachedList,
+} from '@/utils/redis/filter-list-helpers';
 
 /**
  * @param {GetCustomersFilters} filters - The filters to apply to the customers
@@ -40,12 +40,10 @@ export const getCustomersService = async (
   pageSize: number,
   userId: string,
 ): Promise<PaginatedResponse<PublicCustomer>> => {
-  const { data: cachedData, cacheKey } = await getCachedCustomers(
-    filters,
-    pageIndex,
-    pageSize,
-    userId,
-  );
+  const { data: cachedData, cacheKey } = await getCachedList<
+    PublicCustomer,
+    GetCustomersFilters
+  >(filters, pageIndex, pageSize, userId, 'customers');
   if (cachedData) {
     return cachedData;
   }
@@ -63,13 +61,14 @@ export const getCustomersService = async (
     totalPages: Math.ceil(fetchedData.total / pageSize),
   };
 
-  await setCachedCustomers(cacheKey, responseData);
+  await setCachedList(cacheKey, responseData);
 
   return responseData;
 };
 
 /**
  * @param {ICustomer} customer - The customer to create
+ * @param {string} userId - The user ID
  *
  * @returns {Promise<{ message: string; customer: PublicCustomer }>} The message and the customer
  */
@@ -92,7 +91,7 @@ export const createCustomerService = async (
     throw new InternalServerError('Failed to create customer');
   }
 
-  await invalidateCachedCustomers(userId);
+  await invalidateCachedList(userId, 'customers');
 
   return {
     message: 'Customer created successfully',
@@ -102,6 +101,7 @@ export const createCustomerService = async (
 
 /**
  * @param {ICustomer} customer - The customer to update
+ * @param {string} userId - The user ID
  *
  * @returns {Promise<{ message: string; customer: PublicCustomer }>} The message and the customer
  */
@@ -131,7 +131,7 @@ export const updateCustomerService = async (
     throw new InternalServerError('Failed to update customer');
   }
 
-  await invalidateCachedCustomers(userId);
+  await invalidateCachedList(userId, 'customers');
 
   return {
     message: 'Customer updated successfully',
@@ -141,6 +141,7 @@ export const updateCustomerService = async (
 
 /**
  * @param {string} id - The id of the customer to delete
+ * @param {string} userId - The user ID
  *
  * @returns {Promise<{ message: string }>} The message
  */
@@ -158,7 +159,7 @@ export const deleteCustomerService = async (
     throw new InternalServerError('Failed to delete customer');
   }
 
-  await invalidateCachedCustomers(userId);
+  await invalidateCachedList(userId, 'customers');
 
   return { message: 'Customer deleted successfully' };
 };
