@@ -1,4 +1,4 @@
-import { IUser } from './modules/auth/auth.types';
+import { IUser } from '@/modules/auth/auth.types';
 
 declare global {
   type RepoPromise<T> = Promise<T | undefined>;
