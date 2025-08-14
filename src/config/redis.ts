@@ -7,4 +7,9 @@ const redis = new Redis({
   password: process.env.REDIS_PASSWORD!,
 });
 
+redis.on('error', (error) => {
+  console.error('Redis error:', error);
+  process.exit(1);
+});
+
 export default redis;
