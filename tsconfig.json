@@ -6,6 +6,21 @@
     "outDir": "./dist",
     "typeRoots": ["./src/types", "./node_modules/@types"],
 
+    // Path Aliases
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@/config/*": ["config/*"],
+      "@/database/*": ["database/*"],
+      "@/errors/*": ["errors/*"],
+      "@/jobs/*": ["jobs/*"],
+      "@/middlewares/*": ["middlewares/*"],
+      "@/modules/*": ["modules/*"],
+      "@/redis/*": ["redis/*"],
+      "@/services/*": ["services/*"],
+      "@/utils/*": ["utils/*"]
+    },
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
