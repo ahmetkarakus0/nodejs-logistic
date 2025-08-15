@@ -41,8 +41,7 @@ exports.up = async function (db) {
       status driver_status NOT NULL DEFAULT 'active',
       notes TEXT,
       created_at TIMESTAMP NOT NULL DEFAULT now(),
-      updated_at TIMESTAMP NOT NULL DEFAULT now(),
-      deleted_at TIMESTAMP NULL
+      updated_at TIMESTAMP NOT NULL DEFAULT now()
     );
   `);
 

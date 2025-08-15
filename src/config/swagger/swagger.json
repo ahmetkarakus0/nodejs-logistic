@@ -14,12 +14,16 @@
       "description": "Authentication and authorization endpoints"
     },
     {
-      "name": "customer",
+      "name": "customers",
       "description": "Customer management operations"
     },
     {
       "name": "customer-locations",
       "description": "Customer locations management operations"
+    },
+    {
+      "name": "drivers",
+      "description": "Driver management operations"
     }
   ],
   "securityDefinitions": {
@@ -64,20 +68,20 @@
     "/auth/logout": {
       "$ref": "paths/auth/logout.json"
     },
-    "/customer": {
+    "/customers": {
       "get": {
-        "$ref": "paths/customer/list.json"
+        "$ref": "paths/customers/list.json"
       },
       "post": {
-        "$ref": "paths/customer/create.json"
+        "$ref": "paths/customers/create.json"
       }
     },
-    "/customer/{id}": {
+    "/customers/{id}": {
       "put": {
-        "$ref": "paths/customer/update.json"
+        "$ref": "paths/customers/update.json"
       },
       "delete": {
-        "$ref": "paths/customer/delete.json"
+        "$ref": "paths/customers/delete.json"
       }
     },
     "/customer-locations": {
@@ -94,6 +98,22 @@
       },
       "delete": {
         "$ref": "paths/customer-locations/delete.json"
+      }
+    },
+    "/drivers": {
+      "get": {
+        "$ref": "paths/drivers/list.json"
+      },
+      "post": {
+        "$ref": "paths/drivers/create.json"
+      }
+    },
+    "/drivers/{id}": {
+      "put": {
+        "$ref": "paths/drivers/update.json"
+      },
+      "delete": {
+        "$ref": "paths/drivers/delete.json"
       }
     }
   }

@@ -56,8 +56,7 @@ exports.up = async function (db) {
       is_primary BOOLEAN NOT NULL DEFAULT false,
       notes VARCHAR,
       created_at TIMESTAMP NOT NULL DEFAULT now(),
-      updated_at TIMESTAMP NOT NULL DEFAULT now(),
-      deleted_at TIMESTAMP NULL
+      updated_at TIMESTAMP NOT NULL DEFAULT now()
     );
   `);
 

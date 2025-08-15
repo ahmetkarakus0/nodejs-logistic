@@ -19,7 +19,6 @@ const files = [
   'types.ts',
   'validators.ts',
   'repository.ts',
-  'redis.ts',
   'helpers.ts',
 ];
 

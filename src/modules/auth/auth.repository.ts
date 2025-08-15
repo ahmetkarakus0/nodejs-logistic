@@ -7,7 +7,7 @@ import {
 } from '@/modules/auth/auth.types';
 
 export const insertUser = async (
-  user: Omit<IUser, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>,
+  user: Omit<IUser, 'id' | 'created_at' | 'updated_at'>,
 ): RepoPromise<IUser> => {
   const { name, surname, phone, role, password } = user;
   const pool = await createPool();
@@ -29,14 +29,14 @@ export const insertUser = async (
 
 export const getUserByPhone = async (phone: string): RepoPromise<IUser> => {
   const pool = await createPool();
-  const query = `SELECT * FROM users WHERE phone = $1 AND deleted_at IS NULL`;
+  const query = `SELECT * FROM users WHERE phone = $1`;
   const result = await pool.query(query, [phone]);
   return result.rows[0] as IUser;
 };
 
 export const getUserById = async (id: string): RepoPromise<IUser> => {
   const pool = await createPool();
-  const query = `SELECT * FROM users WHERE id = $1 AND deleted_at IS NULL`;
+  const query = `SELECT * FROM users WHERE id = $1`;
   const result = await pool.query(query, [id]);
   return result.rows[0] as IUser;
 };
@@ -46,7 +46,7 @@ export const markTwoFactorCodeAsUsed = async (
   userId: string,
 ): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE two_factor_codes SET is_used = true, updated_at = now(), deleted_at = now() WHERE code = $1 AND user_id = $2`;
+  const query = `UPDATE two_factor_codes SET is_used = true WHERE code = $1 AND user_id = $2`;
   await pool.query(query, [code, userId]);
   return true;
 };
@@ -67,7 +67,7 @@ export const getValidTwoFactorCodeByCodeAndUserId = async (
   userId: string,
 ): RepoPromise<ITwoFactorCode> => {
   const pool = await createPool();
-  const query = `SELECT * FROM two_factor_codes WHERE code = $1 AND user_id = $2 AND is_used = false AND expires_at > NOW() AND deleted_at IS NULL`;
+  const query = `SELECT * FROM two_factor_codes WHERE code = $1 AND user_id = $2 AND is_used = false AND expires_at > NOW()`;
   const result = await pool.query(query, [code, userId]);
   return result.rows[0] as ITwoFactorCode;
 };
@@ -88,7 +88,7 @@ export const getValidResetPasswordTokenByTokenAndPhone = async (
   phone: string,
 ): RepoPromise<IResetPasswordToken> => {
   const pool = await createPool();
-  const query = `SELECT * FROM reset_password_tokens WHERE token = $1 AND phone = $2 AND expires_at > NOW() AND is_used = false AND deleted_at IS NULL`;
+  const query = `SELECT * FROM reset_password_tokens WHERE token = $1 AND phone = $2 AND expires_at > NOW() AND is_used = false`;
   const result = await pool.query(query, [token, phone]);
   return result.rows[0] as IResetPasswordToken;
 };
@@ -98,7 +98,7 @@ export const markResetPasswordTokenAsUsed = async (
   phone: string,
 ): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE reset_password_tokens SET is_used = true, updated_at = now(), deleted_at = now() WHERE token = $1 AND phone = $2`;
+  const query = `UPDATE reset_password_tokens SET is_used = true WHERE token = $1 AND phone = $2`;
   await pool.query(query, [token, phone]);
   return true;
 };
@@ -108,7 +108,7 @@ export const updateUserPassword = async (
   password: string,
 ): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE users SET password = $1, updated_at = now() WHERE id = $2`;
+  const query = `UPDATE users SET password = $1 WHERE id = $2`;
   await pool.query(query, [password, userId]);
   return true;
 };
@@ -128,14 +128,14 @@ export const getValidRefreshTokenByHash = async (
   hash: string,
 ): RepoPromise<IRefreshToken> => {
   const pool = await createPool();
-  const query = `SELECT * FROM refresh_tokens WHERE hash = $1 AND expires_at > NOW() AND revoked = false AND deleted_at IS NULL`;
+  const query = `SELECT * FROM refresh_tokens WHERE hash = $1 AND expires_at > NOW() AND revoked = false`;
   const result = await pool.query(query, [hash]);
   return result.rows[0] as IRefreshToken;
 };
 
 export const revokeRefreshToken = async (id: string): RepoPromise<boolean> => {
   const pool = await createPool();
-  const query = `UPDATE refresh_tokens SET revoked = true, updated_at = now(), deleted_at = now() WHERE id = $1`;
+  const query = `UPDATE refresh_tokens SET revoked = true WHERE id = $1`;
   await pool.query(query, [id]);
   return true;
 };

@@ -29,21 +29,21 @@ export interface ICustomerLocation {
   notes: string | null;
   created_at: Date;
   updated_at: Date;
-  deleted_at: Date | null;
 }
 
-export interface GetCustomerLocationsFilters {
-  customerId?: string;
-  label?: string;
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  country?: string;
-  latitude?: number;
-  longitude?: number;
-  type?: ECustomerLocationType;
-  isPrimary?: boolean;
-  notes?: string;
-}
+export interface GetCustomerLocationsFilters
+  extends Partial<{
+    customerId: string;
+    label: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    type: ECustomerLocationType;
+    isPrimary: boolean;
+    notes: string;
+  }> {}

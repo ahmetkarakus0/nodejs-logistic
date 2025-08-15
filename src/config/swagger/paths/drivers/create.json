@@ -1,0 +1,161 @@
+{
+  "operationId": "createDriver",
+  "tags": ["drivers"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "body",
+      "in": "body",
+      "required": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "license_number": {
+            "type": "string",
+            "example": "1234567890"
+          },
+          "license_expiry_date": {
+            "type": "string",
+            "example": "2025-01-01"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "example": "2025-01-01"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main St"
+          },
+          "emergency_contact_name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "emergency_contact_phone": {
+            "type": "string",
+            "example": "+1234567890"
+          },
+          "employment_start_date": {
+            "type": "string",
+            "example": "2025-01-01"
+          },
+          "employment_end_date": {
+            "type": "string",
+            "example": "2025-01-01"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "notes": {
+            "type": "string",
+            "example": "This is a note"
+          }
+        },
+        "required": [
+          "user_id",
+          "license_number",
+          "license_expiry_date",
+          "date_of_birth",
+          "address",
+          "emergency_contact_name",
+          "emergency_contact_phone",
+          "employment_start_date",
+          "status"
+        ]
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Driver created successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Driver created successfully"
+          },
+          "driver": {
+            "type": "object",
+            "properties": {
+              "license_number": {
+                "type": "string",
+                "example": "1234567890"
+              },
+              "license_expiry_date": {
+                "type": "string",
+                "example": "2025-01-01"
+              },
+              "date_of_birth": {
+                "type": "string",
+                "example": "2025-01-01"
+              },
+              "address": {
+                "type": "string",
+                "example": "123 Main St"
+              },
+              "emergency_contact_name": {
+                "type": "string",
+                "example": "John Doe"
+              },
+              "emergency_contact_phone": {
+                "type": "string",
+                "example": "+1234567890"
+              },
+              "employment_start_date": {
+                "type": "string",
+                "example": "2025-01-01"
+              },
+              "employment_end_date": {
+                "type": "string",
+                "example": "2025-01-01"
+              },
+              "status": {
+                "type": "string",
+                "example": "active"
+              },
+              "notes": {
+                "type": "string",
+                "example": "This is a note"
+              }
+            }
+          }
+        },
+        "required": ["message", "driver"]
+      }
+    },
+    "400": {
+      "description": "Driver already exists",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Driver already exists"
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to create driver"
+          }
+        }
+      }
+    }
+  }
+}

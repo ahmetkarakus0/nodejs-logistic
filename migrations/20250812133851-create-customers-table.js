@@ -25,8 +25,7 @@ exports.up = async function (db) {
       email VARCHAR(255) NOT NULL,
       billing_info JSONB NOT NULL DEFAULT '{}',
       created_at TIMESTAMP NOT NULL DEFAULT now(),
-      updated_at TIMESTAMP NOT NULL DEFAULT now(),
-      deleted_at TIMESTAMP NULL
+      updated_at TIMESTAMP NOT NULL DEFAULT now()
     );
   `);
 

@@ -1,0 +1,237 @@
+{
+  "operationId": "getDrivers",
+  "tags": ["drivers"],
+  "security": [
+    {
+      "refreshTokenHeader": [],
+      "bearerAuth": []
+    }
+  ],
+  "parameters": [
+    {
+      "name": "pageIndex",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number",
+        "example": 0
+      }
+    },
+    {
+      "name": "pageSize",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "number",
+        "example": 25
+      }
+    },
+    {
+      "name": "userId",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "licenseNumber",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "licenseExpiryDate",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "dateOfBirth",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "address",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "emergencyContactName",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "emergencyContactPhone",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "employmentStartDate",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "employmentEndDate",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    },
+    {
+      "name": "notes",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string",
+        "example": ""
+      }
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Drivers fetched successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "license_number": {
+                  "type": "string",
+                  "example": "1234567890"
+                },
+                "license_expiry_date": {
+                  "type": "string",
+                  "example": "2025-01-01"
+                },
+                "date_of_birth": {
+                  "type": "string",
+                  "example": "2000-01-01"
+                },
+                "emergency_contact_name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "123 Main St"
+                },
+                "emergency_contact_phone": {
+                  "type": "string",
+                  "example": "+15551234567"
+                },
+                "employment_start_date": {
+                  "type": "string",
+                  "example": "2020-01-01"
+                },
+                "employment_end_date": {
+                  "type": "string",
+                  "example": "2020-01-01"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                },
+                "notes": {
+                  "type": "string",
+                  "example": "Notes"
+                }
+              }
+            }
+          },
+          "pageIndex": {
+            "type": "number",
+            "example": 0
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 25
+          },
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "example": 4
+          }
+        },
+        "required": ["items", "pageIndex", "pageSize", "total", "totalPages"]
+      }
+    },
+    "400": {
+      "description": "Bad request",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Bad request"
+          }
+        },
+        "required": ["message"]
+      }
+    },
+    "500": {
+      "description": "Internal server error",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Failed to create customer"
+          }
+        }
+      }
+    }
+  }
+}

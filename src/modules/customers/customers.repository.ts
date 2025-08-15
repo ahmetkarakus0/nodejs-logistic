@@ -32,7 +32,7 @@ export const getCustomerByUserId = async (
   user_id: string,
 ): RepoPromise<ICustomer> => {
   const pool = await createPool();
-  const query = `SELECT * FROM customers WHERE user_id = $1 AND deleted_at IS NULL`;
+  const query = `SELECT * FROM customers WHERE user_id = $1`;
   const result = await pool.query(query, [user_id]);
   return result.rows[0] as ICustomer;
 };
@@ -43,7 +43,7 @@ export const updateCustomer = async (
 ): RepoPromise<ICustomer> => {
   const { keys, values, setClause } = createSetClause(customer);
   const pool = await createPool();
-  const query = `UPDATE customers SET ${setClause}, updated_at = now() WHERE id = $${keys.length + 1} RETURNING *`;
+  const query = `UPDATE customers SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
   values.push(id);
   const result = await pool.query(query, values);
   return result.rows[0] as ICustomer;
@@ -51,14 +51,14 @@ export const updateCustomer = async (
 
 export const getCustomerById = async (id: string): RepoPromise<ICustomer> => {
   const pool = await createPool();
-  const query = `SELECT * FROM customers WHERE id = $1 AND deleted_at IS NULL`;
+  const query = `SELECT * FROM customers WHERE id = $1`;
   const result = await pool.query(query, [id]);
   return result.rows[0] as ICustomer;
 };
 
 export const deleteCustomer = async (id: string): RepoPromise<ICustomer> => {
   const pool = await createPool();
-  const query = `UPDATE customers SET deleted_at = now() WHERE id = $1 RETURNING *`;
+  const query = `DELETE FROM customers WHERE id = $1`;
   const result = await pool.query(query, [id]);
   return result.rows[0] as ICustomer;
 };
@@ -76,10 +76,10 @@ export const getCustomers = async (
     pageSize,
   );
 
-  const query = `SELECT * FROM customers WHERE deleted_at IS NULL ${filterQuery}`;
+  const query = `SELECT * FROM customers ${filterQuery}`;
   const result = await pool.query(query, filterValues);
 
-  const countQuery = `SELECT COUNT(*) FROM customers WHERE deleted_at IS NULL ${filterQuery}`;
+  const countQuery = `SELECT COUNT(*) FROM customers ${filterQuery}`;
   const countResult = await pool.query(countQuery, filterValues);
   const total = +countResult.rows[0]?.count || 0;
 

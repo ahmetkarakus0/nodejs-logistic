@@ -6,7 +6,6 @@ export interface ICustomer {
   billing_info: IBillingInfo;
   created_at: Date;
   updated_at: Date;
-  deleted_at: Date | null;
 }
 
 export interface IBillingInfo {
@@ -27,17 +26,18 @@ export interface IContact {
   phone: string;
 }
 
-export type GetCustomersFilters = {
-  companyName?: string;
-  email?: string;
-  userId?: string;
-  billingInfoBillingAddressStreet?: string;
-  billingInfoBillingAddressCity?: string;
-  billingInfoBillingAddressPostalCode?: string;
-  billingInfoBillingAddressCountry?: string;
-  billingInfoTaxId?: string;
-  billingInfoPaymentMethod?: string;
-  billingInfoContactsName?: string;
-  billingInfoContactsEmail?: string;
-  billingInfoContactsPhone?: string;
-};
+export interface GetCustomersFilters
+  extends Partial<{
+    companyName: string;
+    email: string;
+    userId: string;
+    billingInfoBillingAddressStreet: string;
+    billingInfoBillingAddressCity: string;
+    billingInfoBillingAddressPostalCode: string;
+    billingInfoBillingAddressCountry: string;
+    billingInfoTaxId: string;
+    billingInfoPaymentMethod: string;
+    billingInfoContactsName: string;
+    billingInfoContactsEmail: string;
+    billingInfoContactsPhone: string;
+  }> {}

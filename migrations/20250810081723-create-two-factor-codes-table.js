@@ -25,8 +25,7 @@ exports.up = async function (db) {
         ON UPDATE CASCADE,
       is_used BOOLEAN NOT NULL DEFAULT false,
       created_at TIMESTAMP NOT NULL DEFAULT now(),
-      updated_at TIMESTAMP NOT NULL DEFAULT now(),
-      deleted_at TIMESTAMP NULL
+      updated_at TIMESTAMP NOT NULL DEFAULT now()
     );
   `);
 
