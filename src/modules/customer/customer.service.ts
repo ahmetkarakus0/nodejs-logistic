@@ -26,6 +26,7 @@ import {
   invalidateCachedList,
   setCachedList,
 } from '@/utils/redis/filter-list-helpers';
+import { deleteCustomerLocationsByCustomerId } from '../customer-locations/customer-locations.repository';
 
 /**
  * @param {GetCustomersFilters} filters - The filters to apply to the customers
@@ -159,7 +160,14 @@ export const deleteCustomerService = async (
     throw new InternalServerError('Failed to delete customer');
   }
 
+  const deletedCustomerLocations =
+    await deleteCustomerLocationsByCustomerId(id);
+  if (!deletedCustomerLocations) {
+    throw new InternalServerError('Failed to delete customer locations');
+  }
+
   await invalidateCachedList(userId, 'customers');
+  await invalidateCachedList(userId, 'customer-locations');
 
   return { message: 'Customer deleted successfully' };
 };

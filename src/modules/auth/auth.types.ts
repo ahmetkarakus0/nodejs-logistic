@@ -30,6 +30,7 @@ export interface IUser {
   password: string;
   created_at: Date;
   updated_at: Date;
+  deleted_at: Date | null;
 }
 
 export interface ITwoFactorCode {
@@ -40,6 +41,7 @@ export interface ITwoFactorCode {
   is_used: boolean;
   created_at: Date;
   updated_at: Date;
+  deleted_at: Date | null;
 }
 
 export interface IResetPasswordToken {
@@ -50,6 +52,7 @@ export interface IResetPasswordToken {
   is_used: boolean;
   created_at: Date;
   updated_at: Date;
+  deleted_at: Date | null;
 }
 
 export interface ISendResetPasswordLinkResponse {
@@ -65,4 +68,5 @@ export interface IRefreshToken {
   revoked: boolean;
   created_at: Date;
   updated_at: Date;
+  deleted_at: Date | null;
 }

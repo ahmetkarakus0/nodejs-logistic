@@ -1,10 +1,10 @@
 import { createPool } from '@/database';
+import { createFilterQueryAndValues } from '@/modules/customer-locations/customer-locations.helpers';
 import {
   GetCustomerLocationsFilters,
   ICustomerLocation,
 } from '@/modules/customer-locations/customer-locations.types';
 import { createSetClause } from '@/utils/create-set-clause';
-import { createFilterQueryAndValues } from '@/modules/customer-locations/customer-locations.helpers';
 
 export const getCustomerLocations = async (
   filters: GetCustomerLocationsFilters,
@@ -19,10 +19,10 @@ export const getCustomerLocations = async (
     pageSize,
   );
 
-  const query = `SELECT * FROM customer_locations ${filterQuery}`;
+  const query = `SELECT * FROM customer_locations WHERE deleted_at IS NULL ${filterQuery}`;
   const result = await pool.query(query, filterValues);
 
-  const countQuery = `SELECT COUNT(*) FROM customer_locations ${filterQuery}`;
+  const countQuery = `SELECT COUNT(*) FROM customer_locations WHERE deleted_at IS NULL ${filterQuery}`;
   const countResult = await pool.query(countQuery, filterValues);
   const total = +countResult.rows[0]?.count || 0;
 
@@ -60,7 +60,7 @@ export const getCustomerLocationById = async (
   id: string,
 ): RepoPromise<ICustomerLocation> => {
   const pool = await createPool();
-  const query = `SELECT * FROM customer_locations WHERE id = $1`;
+  const query = `SELECT * FROM customer_locations WHERE id = $1 AND deleted_at IS NULL`;
   const values = [id];
   const result = await pool.query(query, values);
   return result.rows[0] as ICustomerLocation;
@@ -82,8 +82,18 @@ export const deleteCustomerLocation = async (
   id: string,
 ): RepoPromise<ICustomerLocation> => {
   const pool = await createPool();
-  const query = `DELETE FROM customer_locations WHERE id = $1 RETURNING *`;
+  const query = `UPDATE customer_locations SET deleted_at = now() WHERE id = $1 RETURNING *`;
   const values = [id];
   const result = await pool.query(query, values);
   return result.rows[0] as ICustomerLocation;
+};
+
+export const deleteCustomerLocationsByCustomerId = async (
+  customerId: string,
+): RepoPromise<ICustomerLocation[]> => {
+  const pool = await createPool();
+  const query = `UPDATE customer_locations SET deleted_at = now() WHERE customer_id = $1 RETURNING *`;
+  const values = [customerId];
+  const result = await pool.query(query, values);
+  return result.rows as ICustomerLocation[];
 };

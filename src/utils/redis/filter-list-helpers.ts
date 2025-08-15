@@ -44,7 +44,7 @@ export const invalidateCachedList = async (userId: string, prefix: string) => {
     const [nextCursor, keys] = await redis.scan(
       cursor,
       'MATCH',
-      `${prefix}:${userId}`,
+      `${prefix}:${userId}:*`,
     );
     cursor = nextCursor;
 

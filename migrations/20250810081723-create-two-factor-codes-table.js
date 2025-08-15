@@ -4,10 +4,6 @@ var dbm;
 var type;
 var seed;
 
-/**
- * We receive the dbmigrate dependency from dbmigrate initially.
- * This enables us to not have to rely on NODE_PATH.
- */
 exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -15,59 +11,48 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  // Ensure pgcrypto is available for UUID generation
   await db.runSql(`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`);
 
-  return db.createTable('two_factor_codes', {
-    id: {
-      type: 'uuid',
-      primaryKey: true,
-      notNull: true,
-      defaultValue: new String('gen_random_uuid()'),
-    },
-    code: {
-      type: 'string',
-      notNull: true,
-    },
-    expires_at: {
-      type: 'timestamp',
-      notNull: true,
-    },
-    user_id: {
-      type: 'uuid',
-      notNull: true,
-      foreignKey: {
-        name: 'fk_two_factor_codes_user_id',
-        table: 'users',
-        mapping: 'id',
-        rules: {
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE',
-        },
-      },
-    },
-    is_used: {
-      type: 'boolean',
-      notNull: true,
-      defaultValue: false,
-    },
-    created_at: {
-      type: 'timestamp',
-      notNull: true,
-      defaultValue: new String('now()'),
-    },
-    updated_at: {
-      type: 'timestamp',
-      notNull: true,
-      defaultValue: new String('now()'),
-    },
-  });
+  // Create table with raw SQL to avoid type-prep issues
+  await db.runSql(`
+    CREATE TABLE two_factor_codes (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      code VARCHAR NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      user_id uuid NOT NULL REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+      is_used BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMP NOT NULL DEFAULT now(),
+      updated_at TIMESTAMP NOT NULL DEFAULT now(),
+      deleted_at TIMESTAMP NULL
+    );
+  `);
+
+  // Auto-update updated_at field on UPDATE
+  await db.runSql(`
+    CREATE OR REPLACE FUNCTION update_updated_at_column()
+    RETURNS TRIGGER AS $$
+    BEGIN
+      NEW.updated_at = NOW();
+      RETURN NEW;
+    END;
+    $$ language 'plpgsql';
+  `);
+
+  await db.runSql(`
+    CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON two_factor_codes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+  `);
 };
 
 exports.down = async function (db) {
-  await db.runSql(
-    `ALTER TABLE two_factor_codes DROP CONSTRAINT fk_two_factor_codes_user_id`,
-  );
-  return db.dropTable('two_factor_codes');
+  await db.runSql(`DROP TRIGGER IF EXISTS set_updated_at ON two_factor_codes;`);
+  await db.runSql(`DROP FUNCTION IF EXISTS update_updated_at_column;`);
+  await db.runSql(`DROP TABLE IF EXISTS two_factor_codes CASCADE;`);
 };
 
 exports._meta = {
