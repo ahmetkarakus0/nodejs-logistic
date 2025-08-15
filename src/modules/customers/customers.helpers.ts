@@ -1,7 +1,7 @@
 import {
   GetCustomersFilters,
   ICustomer,
-} from '@/modules/customer/customer.types';
+} from '@/modules/customers/customers.types';
 
 export type PublicCustomer = Omit<
   ICustomer,

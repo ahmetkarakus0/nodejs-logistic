@@ -1,9 +1,9 @@
 import { createPool } from '@/database';
-import { createFilterQueryAndValues } from '@/modules/customer/customer.helpers';
+import { createFilterQueryAndValues } from '@/modules/customers/customers.helpers';
 import {
   GetCustomersFilters,
   ICustomer,
-} from '@/modules/customer/customer.types';
+} from '@/modules/customers/customers.types';
 import { createSetClause } from '@/utils/create-set-clause';
 
 export const insertCustomer = async (

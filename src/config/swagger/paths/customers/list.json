@@ -1,6 +1,6 @@
 {
   "operationId": "getCustomers",
-  "tags": ["customer"],
+  "tags": ["customers"],
   "security": [
     {
       "refreshTokenHeader": [],

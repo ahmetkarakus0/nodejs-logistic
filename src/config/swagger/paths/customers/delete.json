@@ -1,6 +1,6 @@
 {
   "operationId": "deleteCustomer",
-  "tags": ["customer"],
+  "tags": ["customers"],
   "security": [
     {
       "refreshTokenHeader": [],

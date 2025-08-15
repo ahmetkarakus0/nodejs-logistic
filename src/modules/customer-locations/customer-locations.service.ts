@@ -3,7 +3,7 @@ import {
   GetCustomerLocationsFilters,
   ICustomerLocation,
 } from '@/modules/customer-locations/customer-locations.types';
-import { getCustomerById } from '@/modules/customer/customer.repository';
+import { getCustomerById } from '@/modules/customers/customers.repository';
 import {
   deleteCustomerLocation,
   getCustomerLocationById,
@@ -103,6 +103,13 @@ export const updateCustomerLocationService = async (
   const foundCustomerLocation = await getCustomerLocationById(id);
   if (!foundCustomerLocation) {
     throw new BadRequestError('Customer location not found');
+  }
+
+  if (customerLocation.customer_id) {
+    const foundCustomer = await getCustomerById(customerLocation.customer_id);
+    if (!foundCustomer) {
+      throw new BadRequestError('Customer not found');
+    }
   }
 
   const updatedCustomerLocation = await updateCustomerLocation(

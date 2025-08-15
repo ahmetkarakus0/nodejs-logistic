@@ -1,6 +1,6 @@
 {
-  "operationId": "updateCustomer",
-  "tags": ["customer"],
+  "operationId": "createCustomer",
+  "tags": ["customers"],
   "security": [
     {
       "refreshTokenHeader": [],
@@ -8,12 +8,6 @@
     }
   ],
   "parameters": [
-    {
-      "name": "id",
-      "in": "path",
-      "required": true,
-      "type": "string"
-    },
     {
       "name": "body",
       "in": "body",
@@ -60,19 +54,19 @@
             }
           }
         },
-        "required": ["id"]
+        "required": ["user_id", "company_name", "email", "billing_info"]
       }
     }
   ],
   "responses": {
     "200": {
-      "description": "Customer updated successfully",
+      "description": "Customer created successfully",
       "schema": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
-            "example": "Customer updated successfully"
+            "example": "Customer created successfully"
           },
           "customer": {
             "type": "object",
@@ -127,37 +121,13 @@
       }
     },
     "400": {
-      "description": "Customer not found",
+      "description": "Customer already exists",
       "schema": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
-            "example": "Customer not found"
-          }
-        }
-      }
-    },
-    "409": {
-      "description": "Customer already exists for this user",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Customer already exists for this user"
-          }
-        }
-      }
-    },
-    "401": {
-      "description": "User not found",
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "User not found"
+            "example": "Customer already exists"
           }
         }
       }

@@ -63,7 +63,7 @@ exports.up = async function (db) {
 
   // Auto-update updated_at field
   await db.runSql(`
-    CREATE OR REPLACE FUNCTION update_updated_at_column()
+    CREATE OR REPLACE FUNCTION update_customer_locations_updated_at_column()
     RETURNS TRIGGER AS $$
     BEGIN
       NEW.updated_at = NOW();
@@ -76,7 +76,7 @@ exports.up = async function (db) {
     CREATE TRIGGER set_updated_at
     BEFORE UPDATE ON customer_locations
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_customer_locations_updated_at_column();
   `);
 };
 
@@ -84,7 +84,9 @@ exports.down = async function (db) {
   await db.runSql(
     `DROP TRIGGER IF EXISTS set_updated_at ON customer_locations;`,
   );
-  await db.runSql(`DROP FUNCTION IF EXISTS update_updated_at_column;`);
+  await db.runSql(
+    `DROP FUNCTION IF EXISTS update_customer_locations_updated_at_column;`,
+  );
   await db.runSql(`DROP TABLE IF EXISTS customer_locations CASCADE;`);
   await db.runSql(`DROP TYPE IF EXISTS location_type;`);
 };

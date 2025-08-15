@@ -32,7 +32,7 @@ exports.up = async function (db) {
 
   // Auto-update updated_at field on UPDATE
   await db.runSql(`
-    CREATE OR REPLACE FUNCTION update_updated_at_column()
+    CREATE OR REPLACE FUNCTION update_two_factor_codes_updated_at_column()
     RETURNS TRIGGER AS $$
     BEGIN
       NEW.updated_at = NOW();
@@ -45,13 +45,15 @@ exports.up = async function (db) {
     CREATE TRIGGER set_updated_at
     BEFORE UPDATE ON two_factor_codes
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_two_factor_codes_updated_at_column();
   `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`DROP TRIGGER IF EXISTS set_updated_at ON two_factor_codes;`);
-  await db.runSql(`DROP FUNCTION IF EXISTS update_updated_at_column;`);
+  await db.runSql(
+    `DROP FUNCTION IF EXISTS update_two_factor_codes_updated_at_column;`,
+  );
   await db.runSql(`DROP TABLE IF EXISTS two_factor_codes CASCADE;`);
 };
 

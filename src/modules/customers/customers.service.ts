@@ -7,7 +7,7 @@ import {
 import {
   PublicCustomer,
   toPublicCustomer,
-} from '@/modules/customer/customer.helpers';
+} from '@/modules/customers/customers.helpers';
 import {
   deleteCustomer,
   getCustomerById,
@@ -15,11 +15,11 @@ import {
   getCustomers,
   insertCustomer,
   updateCustomer,
-} from '@/modules/customer/customer.repository';
+} from '@/modules/customers/customers.repository';
 import {
   GetCustomersFilters,
   ICustomer,
-} from '@/modules/customer/customer.types';
+} from '@/modules/customers/customers.types';
 import { getUserById } from '@/modules/auth/auth.repository';
 import {
   getCachedList,
@@ -27,6 +27,7 @@ import {
   setCachedList,
 } from '@/utils/redis/filter-list-helpers';
 import { deleteCustomerLocationsByCustomerId } from '../customer-locations/customer-locations.repository';
+import { EUserRole } from '@/modules/auth/auth.types';
 
 /**
  * @param {GetCustomersFilters} filters - The filters to apply to the customers
@@ -81,6 +82,9 @@ export const createCustomerService = async (
   if (!foundUser) {
     throw new NotFoundError('User not found');
   }
+  if (foundUser.role !== EUserRole.CUSTOMER) {
+    throw new BadRequestError('User is not a customer');
+  }
 
   const foundCustomer = await getCustomerByUserId(customer.user_id);
   if (foundCustomer) {
@@ -120,6 +124,15 @@ export const updateCustomerService = async (
     const foundCustomerByUserId = await getCustomerByUserId(customer.user_id);
     if (foundCustomerByUserId && foundCustomerByUserId.id !== id) {
       throw new ConflictError('Customer already exists for this user');
+    }
+    const foundUser = await getUserById(customer.user_id);
+    if (!foundUser) {
+      throw new NotFoundError('User not found');
+    }
+    if (foundUser.role !== EUserRole.CUSTOMER) {
+      throw new BadRequestError(
+        'Only customer users can be assigned to a customer',
+      );
     }
   }
 

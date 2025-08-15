@@ -1,12 +1,13 @@
+import { config } from '@/config/env';
+import { errorHandler } from '@/middlewares/error-handler';
+import authRoutes from '@/modules/auth/auth.routes';
+import customerLocationsRoutes from '@/modules/customer-locations/customer-locations.routes';
+import customerRoutes from '@/modules/customers/customers.routes';
 import express from 'express';
 import { readFileSync } from 'fs';
 import path, { join } from 'path';
 import swaggerUI from 'swagger-ui-express';
-import { config } from './config/env';
-import { errorHandler } from './middlewares/error-handler';
-import authRoutes from './modules/auth/auth.routes';
-import customerLocationsRoutes from './modules/customer-locations/customer-locations.routes';
-import customerRoutes from './modules/customer/customer.routes';
+import driverRoutes from '@/modules/drivers/drivers.routes';
 
 const swaggerDark = readFileSync(
   join(__dirname, 'config', 'swagger', 'swagger-dark.css'),
@@ -76,8 +77,9 @@ loadSwagger().then((swaggerDoc) => {
 
   // Routes
   app.use('/api/v1/auth', authRoutes);
-  app.use('/api/v1/customer', customerRoutes);
+  app.use('/api/v1/customers', customerRoutes);
   app.use('/api/v1/customer-locations', customerLocationsRoutes);
+  app.use('/api/v1/drivers', driverRoutes);
 
   // Error handler middleware, must be at the bottom
   app.use(errorHandler);

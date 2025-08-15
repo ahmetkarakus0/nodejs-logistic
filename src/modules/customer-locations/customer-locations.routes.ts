@@ -1,5 +1,6 @@
-import { Router } from 'express';
+import { asyncHandler } from '@/middlewares/async-handler';
 import { authMiddleware } from '@/middlewares/auth';
+import { onlyAdminMiddleware } from '@/middlewares/only-admin';
 import { validate } from '@/middlewares/validate';
 import {
   createCustomerLocation,
@@ -11,14 +12,14 @@ import {
   createCustomerLocationSchema,
   updateCustomerLocationSchema,
 } from '@/modules/customer-locations/customer-locations.validators';
-import { asyncHandler } from '@/middlewares/async-handler';
+import { Router } from 'express';
 
 const customerLocationsRoutes = Router();
 
 /**
- * @description Apply auth middleware to all customer locations routes
+ * @description Apply auth and onlyAdmin middlewares to all customer locations routes
  */
-customerLocationsRoutes.use(authMiddleware);
+customerLocationsRoutes.use(authMiddleware, onlyAdminMiddleware);
 
 /**
  * @description Get all customer locations.

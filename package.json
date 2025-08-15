@@ -7,7 +7,9 @@
     "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node dist/index.js",
-    "create-module": "node scripts/create-module.mjs"
+    "create-module": "node scripts/create-module.mjs",
+    "db-migrate-up": "db-migrate up --env dev",
+    "db-migrate-down": "db-migrate down --env dev"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

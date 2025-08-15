@@ -7,18 +7,19 @@ import {
   deleteCustomer,
   getCustomers,
   updateCustomer,
-} from '@/modules/customer/customer.controller';
+} from '@/modules/customers/customers.controller';
 import {
   createCustomerSchema,
   updateCustomerSchema,
-} from '@/modules/customer/customer.validator';
+} from '@/modules/customers/customers.validator';
+import { onlyAdminMiddleware } from '@/middlewares/only-admin';
 
 const customerRoutes = Router();
 
 /**
- * @description Apply auth middleware to all customer routes
+ * @description Apply auth and onlyAdmin middlewares to all customer routes
  */
-customerRoutes.use(authMiddleware);
+customerRoutes.use(authMiddleware, onlyAdminMiddleware);
 
 /**
  * @description Get all customers.

@@ -5,8 +5,8 @@ import {
   deleteCustomerService,
   getCustomersService,
   updateCustomerService,
-} from '@/modules/customer/customer.service';
-import { GetCustomersFilters } from '@/modules/customer/customer.types';
+} from '@/modules/customers/customers.service';
+import { GetCustomersFilters } from '@/modules/customers/customers.types';
 
 /**
  * @route GET /customer

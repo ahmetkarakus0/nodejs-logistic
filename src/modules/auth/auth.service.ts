@@ -159,13 +159,21 @@ export const verifyTwoFactorCodeService = async (
     throw new UnauthorizedError('Invalid code');
   }
 
-  const accessToken = jwt.sign({ id: foundUser.id }, process.env.JWT_SECRET!, {
-    expiresIn: +process.env.JWT_EXPIRE!,
-  });
+  const accessToken = jwt.sign(
+    { id: foundUser.id, role: foundUser.role },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: +process.env.JWT_EXPIRE!,
+    },
+  );
 
-  const refreshToken = jwt.sign({ id: foundUser.id }, process.env.JWT_SECRET!, {
-    expiresIn: +process.env.JWT_REFRESH_EXPIRE!,
-  });
+  const refreshToken = jwt.sign(
+    { id: foundUser.id, role: foundUser.role },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: +process.env.JWT_REFRESH_EXPIRE!,
+    },
+  );
 
   const hashedRefreshToken = crypto
     .createHash('sha256')
@@ -233,13 +241,21 @@ export const refreshTokenService = async (
     throw new UnauthorizedError('Invalid credentials');
   }
 
-  const accessToken = jwt.sign({ id: foundUser.id }, process.env.JWT_SECRET!, {
-    expiresIn: +process.env.JWT_EXPIRE!,
-  });
+  const accessToken = jwt.sign(
+    { id: foundUser.id, role: foundUser.role },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: +process.env.JWT_EXPIRE!,
+    },
+  );
 
-  const refreshToken = jwt.sign({ id: foundUser.id }, process.env.JWT_SECRET!, {
-    expiresIn: +process.env.JWT_REFRESH_EXPIRE!,
-  });
+  const refreshToken = jwt.sign(
+    { id: foundUser.id, role: foundUser.role },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: +process.env.JWT_REFRESH_EXPIRE!,
+    },
+  );
 
   const newHashedRefreshToken = crypto
     .createHash('sha256')
